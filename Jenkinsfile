@@ -30,7 +30,7 @@ pipeline {
                         sh '''
                             sudo apt update
                             sudo apt install -y maven
-                            sudo mkdir -p ${MAVEN_HOME}
+                            mkdir -p ${MAVEN_HOME}
                         '''
                     } else {
                         echo "✅ Maven is already installed: ${mavenInstalled}"
@@ -48,10 +48,10 @@ pipeline {
                             sudo apt update
                             sudo apt install -y default-jdk
                             wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.53/bin/apache-tomcat-9.0.53.tar.gz
-                            sudo mkdir -p /opt
-                            sudo tar -xvzf apache-tomcat-9.0.53.tar.gz -C /opt/
-                            sudo ln -s /opt/apache-tomcat-9.0.53 /opt/tomcat
-                            sudo chmod +x /opt/tomcat/bin/*.sh
+                            mkdir -p /opt
+                            tar -xvzf apache-tomcat-9.0.53.tar.gz -C /opt/
+                            ln -s /opt/apache-tomcat-9.0.53 /opt/tomcat
+                            chmod +x /opt/tomcat/bin/*.sh
                         '''
                     } else {
                         echo "✅ Tomcat is already installed at ${TOMCAT_DIR}"
