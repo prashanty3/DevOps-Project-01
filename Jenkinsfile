@@ -118,18 +118,31 @@ pipeline {
         }
 
         stage('Deploy WAR to Tomcat') {
+            environment {
+                WAR_NAME = 'yourapp.war'
+                TOMCAT_DIR = '/opt/tomcat'
+            }
             steps {
                 script {
                     def warBaseName = WAR_NAME.replace('.war', '')
                     sh """
+                        # Ensure target directory exists
+                        mkdir -p ${TOMCAT_DIR}/webapps
+
+                        # Remove previous deployment
                         rm -rf ${TOMCAT_DIR}/webapps/${WAR_NAME} ${TOMCAT_DIR}/webapps/${warBaseName}
-                        cp Java-Login-App/target/*.war ${TOMCAT_DIR}/webapps/${WAR_NAME}
+
+                        # Copy new WAR
+                        cp Java-Login-App/target/dptweb-1.0.war ${TOMCAT_DIR}/webapps/${WAR_NAME}
+
+                        # Restart Tomcat
                         ${TOMCAT_DIR}/bin/shutdown.sh || true
                         ${TOMCAT_DIR}/bin/startup.sh
                     """
                 }
             }
         }
+
     }
 
     post {
