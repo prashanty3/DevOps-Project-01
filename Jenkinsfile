@@ -127,7 +127,7 @@ pipeline {
                     def warBaseName = WAR_NAME.replace('.war', '')
                     sh """
                         # Ensure target directory exists
-                        mkdir -p ${TOMCAT_DIR}/webapps
+                        sudo mkdir -p ${TOMCAT_DIR}/webapps
 
                         # Remove previous deployment
                         rm -rf ${TOMCAT_DIR}/webapps/${WAR_NAME} ${TOMCAT_DIR}/webapps/${warBaseName}
