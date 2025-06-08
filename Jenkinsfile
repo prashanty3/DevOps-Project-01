@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        TOMCAT_DIR = '/opt/tomcat'
+        TOMCAT_DIR = "${WORKSPACE}/tomcat"
         MAVEN_HOME = '/opt/maven'
         WAR_NAME = 'yourapp.war'  // change this based on your actual WAR file
     }
@@ -118,10 +118,6 @@ pipeline {
         }
 
         stage('Deploy WAR to Tomcat') {
-            environment {
-                WAR_NAME = 'yourapp.war'
-                TOMCAT_DIR = '/opt/tomcat'
-            }
             steps {
                 script {
                     def warBaseName = WAR_NAME.replace('.war', '')
@@ -142,6 +138,7 @@ pipeline {
                 }
             }
         }
+
 
     }
 
