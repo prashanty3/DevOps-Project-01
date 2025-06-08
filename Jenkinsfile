@@ -122,10 +122,10 @@ pipeline {
                 script {
                     def warBaseName = WAR_NAME.replace('.war', '')
                     sh """
-                        sudo rm -rf ${TOMCAT_DIR}/webapps/${WAR_NAME} ${TOMCAT_DIR}/webapps/${warBaseName}
-                        sudo cp Java-Login-App/target/*.war ${TOMCAT_DIR}/webapps/${WAR_NAME}
-                        sudo ${TOMCAT_DIR}/bin/shutdown.sh || true
-                        sudo ${TOMCAT_DIR}/bin/startup.sh
+                        rm -rf ${TOMCAT_DIR}/webapps/${WAR_NAME} ${TOMCAT_DIR}/webapps/${warBaseName}
+                        cp Java-Login-App/target/*.war ${TOMCAT_DIR}/webapps/${WAR_NAME}
+                        ${TOMCAT_DIR}/bin/shutdown.sh || true
+                        ${TOMCAT_DIR}/bin/startup.sh
                     """
                 }
             }
