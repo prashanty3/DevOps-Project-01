@@ -45,17 +45,17 @@ pipeline {
                     def tomcatDir = "${env.WORKSPACE}/tomcat"
                     def tomcatExists = fileExists("${tomcatDir}/bin/startup.sh")
                     if (!tomcatExists) {
-                        sh """
-                            mkdir -p ${tomcatDir}
-                            cd ${tomcatDir}
-                            curl -O https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.34/bin/apache-tomcat-10.1.34.tar.gz
-                            curl -O https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.34/bin/apache-tomcat-10.1.34.tar.gz.sha512
-                            expected=\$(cat apache-tomcat-10.1.34.tar.gz.sha512 | awk '{print \$1}')
-                            actual=\$(sha512sum apache-tomcat-10.1.34.tar.gz | awk '{print \$1}')
-                            [ "\$expected" = "\$actual" ] && echo "✅ Checksum verified." || (echo "❌ Checksum failed!" && exit 1)
+                        sh '''
+                            mkdir -p tomcat
+                            cd tomcat
+                            curl -L -O https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.34/bin/apache-tomcat-10.1.34.tar.gz
+                            curl -L -O https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.34/bin/apache-tomcat-10.1.34.tar.gz.sha512
+                            expected=$(cat apache-tomcat-10.1.34.tar.gz.sha512 | awk '{print $1}')
+                            actual=$(sha512sum apache-tomcat-10.1.34.tar.gz | awk '{print $1}')
+                            [ "$expected" = "$actual" ] && echo "✅ Checksum verified." || (echo "❌ Checksum failed!" && exit 1)
                             tar xzvf apache-tomcat-10.1.34.tar.gz --strip-components=1
                             chmod +x bin/*.sh
-                        """
+                        '''
                     } else {
                         echo "✅ Tomcat already exists in workspace."
                     }
