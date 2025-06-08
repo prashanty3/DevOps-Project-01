@@ -29,11 +29,8 @@ pipeline {
                     if (mavenInstalled == 'notfound') {
                         sh '''
                             sudo apt update
-                            wget https://downloads.apache.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.tar.gz
-                            sudo tar -xvzf apache-maven-3.8.4-bin.tar.gz -C /opt/
-                            sudo ln -s /opt/apache-maven-3.8.4 /opt/maven
-                            echo "export PATH=/opt/maven/bin:$PATH" >> ~/.bashrc
-                            source ~/.bashrc
+                            sudo apt install -y maven
+                            sudo mkdir -p ${MAVEN_HOME}
                         '''
                     } else {
                         echo "✅ Maven is already installed: ${mavenInstalled}"
@@ -91,7 +88,10 @@ pipeline {
 
         stage('Clone Git Repository') {
             steps {
-                git branch: 'main', url: 'https://github.com/YOUR_USERNAME/YOUR_REPO.git'
+                echo 'Cloning repository...'
+                git credentialsId: 'github-id',  // replace with your Jenkins credentials ID
+                branch: 'main',  // replace with your desired branch
+                url: 'https://github.com/prashanty3/DevOps-Project-01.git'
                 echo '✅ Repository cloned successfully.'
             }
         }
