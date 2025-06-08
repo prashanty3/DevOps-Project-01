@@ -108,6 +108,27 @@ pipeline {
                 echo '✅ Repository cloned successfully.'
             }
         }
+
+        stage('Build with Maven') {
+            steps {
+                sh '/opt/maven/bin/mvn clean package'
+            }
+        }
+
+        stage('Deploy WAR to Tomcat') {
+            steps {
+                script {
+                    sh """
+                        sudo rm -rf ${TOMCAT_DIR}/webapps/${WAR_NAME}
+                        sudo rm -rf ${TOMCAT_DIR}/webapps/${WAR_NAME.replace('.war', '')}
+                        sudo cp target/*.war ${TOMCAT_DIR}/webapps/${WAR_NAME}
+                        sudo ${TOMCAT_DIR}/bin/shutdown.sh || true
+                        sudo ${TOMCAT_DIR}/bin/startup.sh
+                    """
+                }
+            }
+        }
+        
     }
 
     post {
