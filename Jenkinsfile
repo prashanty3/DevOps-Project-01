@@ -111,25 +111,25 @@ pipeline {
 
         stage('Build with Maven') {
             steps {
-                sh 'mvn clean package'  // Use just 'mvn' since installed via apt
+                dir('Java-Login-App') {  // Change to directory where pom.xml is located
+                    sh 'mvn clean package'
+                }
             }
         }
 
         stage('Deploy WAR to Tomcat') {
             steps {
                 script {
-                    // Remove WAR and extracted app folder properly
                     def warBaseName = WAR_NAME.replace('.war', '')
                     sh """
                         sudo rm -rf ${TOMCAT_DIR}/webapps/${WAR_NAME} ${TOMCAT_DIR}/webapps/${warBaseName}
-                        sudo cp target/*.war ${TOMCAT_DIR}/webapps/${WAR_NAME}
+                        sudo cp Java-Login-App/target/*.war ${TOMCAT_DIR}/webapps/${WAR_NAME}
                         sudo ${TOMCAT_DIR}/bin/shutdown.sh || true
                         sudo ${TOMCAT_DIR}/bin/startup.sh
                     """
                 }
             }
         }
-
     }
 
     post {
