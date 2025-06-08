@@ -111,16 +111,17 @@ pipeline {
 
         stage('Build with Maven') {
             steps {
-                sh '/opt/maven/bin/mvn clean package'
+                sh 'mvn clean package'  // Use just 'mvn' since installed via apt
             }
         }
 
         stage('Deploy WAR to Tomcat') {
             steps {
                 script {
+                    // Remove WAR and extracted app folder properly
+                    def warBaseName = WAR_NAME.replace('.war', '')
                     sh """
-                        sudo rm -rf ${TOMCAT_DIR}/webapps/${WAR_NAME}
-                        sudo rm -rf ${TOMCAT_DIR}/webapps/${WAR_NAME.replace('.war', '')}
+                        sudo rm -rf ${TOMCAT_DIR}/webapps/${WAR_NAME} ${TOMCAT_DIR}/webapps/${warBaseName}
                         sudo cp target/*.war ${TOMCAT_DIR}/webapps/${WAR_NAME}
                         sudo ${TOMCAT_DIR}/bin/shutdown.sh || true
                         sudo ${TOMCAT_DIR}/bin/startup.sh
@@ -128,7 +129,7 @@ pipeline {
                 }
             }
         }
-        
+
     }
 
     post {
