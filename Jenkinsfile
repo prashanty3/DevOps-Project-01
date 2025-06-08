@@ -39,22 +39,22 @@ pipeline {
             }
         }
 
-        stage('Check & Install Tomcat') {
+        stage('Setup Tomcat') {
             steps {
                 script {
-                    def tomcatExists = fileExists("${TOMCAT_DIR}/bin/startup.sh")
+                    def tomcatExists = fileExists("${env.WORKSPACE}/tomcat/bin/startup.sh")
                     if (!tomcatExists) {
                         sh '''
-                            sudo apt update
-                            sudo apt install -y default-jdk
-                            wget https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.53/bin/apache-tomcat-9.0.53.tar.gz
-                            mkdir -p /opt
-                            tar -xvzf apache-tomcat-9.0.53.tar.gz -C /opt/
-                            ln -s /opt/apache-tomcat-9.0.53 /opt/tomcat
-                            chmod +x /opt/tomcat/bin/*.sh
+                            mkdir -p tomcat
+                            cd tomcat
+                            curl -O https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.34/bin/apache-tomcat-10.1.34.tar.gz
+                            curl -O https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.34/bin/apache-tomcat-10.1.34.tar.gz.sha512
+                            sha512sum -c apache-tomcat-10.1.34.tar.gz.sha512
+                            tar xzvf apache-tomcat-10.1.34.tar.gz --strip-components=1
+                            chmod +x bin/*.sh
                         '''
                     } else {
-                        echo "✅ Tomcat is already installed at ${TOMCAT_DIR}"
+                        echo "✅ Tomcat already exists in workspace."
                     }
                 }
             }
