@@ -45,7 +45,7 @@ pipeline {
                     def tomcatExists = fileExists("${env.WORKSPACE}/tomcat/bin/startup.sh")
                     if (!tomcatExists) {
                         sh '''
-                            sudo mkdir -p /opt/tomcat
+                            mkdir -p /opt/tomcat
                             groupadd tomcat
                             useradd -s /bin/false -g tomcat -d /opt/tomcat tomcat
                             cd /tmp
