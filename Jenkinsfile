@@ -48,14 +48,23 @@ pipeline {
                         sh '''
                             mkdir -p tomcat
                             cd tomcat
-                            curl -L -O https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.34/bin/apache-tomcat-10.1.34.tar.gz
-                            curl -L -O https://dlcdn.apache.org/tomcat/tomcat-10/v10.1.34/bin/apache-tomcat-10.1.34.tar.gz.sha512
+                            curl -L -O https://archive.apache.org/dist/tomcat/tomcat-10/v10.1.34/bin/apache-tomcat-10.1.34.tar.gz
+                            curl -L -O https://archive.apache.org/dist/tomcat/tomcat-10/v10.1.34/bin/apache-tomcat-10.1.34.tar.gz.sha512
+
                             expected=$(cat apache-tomcat-10.1.34.tar.gz.sha512 | awk '{print $1}')
                             actual=$(sha512sum apache-tomcat-10.1.34.tar.gz | awk '{print $1}')
-                            [ "$expected" = "$actual" ] && echo "✅ Checksum verified." || (echo "❌ Checksum failed!" && exit 1)
+
+                            if [ "$expected" = "$actual" ]; then
+                                echo "✅ Checksum verified."
+                            else
+                                echo "❌ Checksum failed!"
+                                exit 1
+                            fi
+
                             tar xzvf apache-tomcat-10.1.34.tar.gz --strip-components=1
                             chmod +x bin/*.sh
                         '''
+
                     } else {
                         echo "✅ Tomcat already exists in workspace."
                     }
